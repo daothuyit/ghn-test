@@ -1,0 +1,29 @@
+version: "3.3"
+networks:
+  ghn_network:
+    driver: bridge
+services:
+  ghn-mongodb:
+    image: mongo
+    container_name: ghn-mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: passofroot
+      MONGO_INITDB_DATABASE: ghn-test
+    volumes:
+      - ./mongo-volume:/data/db
+    ports:
+      - 17002:27017
+    networks:
+      - ghn_network
+  ghn-test:
+    image: daothuy/ghn-test:0.0.1-SNAPSHOT
+    container_name: ghn-test
+    restart: always
+    ports:
+      - 17001:8080
+    networks:
+      - ghn_network
+    depends_on:
+      - ghn-mongodb
